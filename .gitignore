@@ -1,7 +1,7 @@
 # Ignore data files
-.csv
-.rds
-.xls
+*.csv
+*.rds
+*.xls
 
 # History files
 .Rhistory
