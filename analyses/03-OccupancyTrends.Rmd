@@ -11,7 +11,7 @@ I run the analyses on a computer cluser and must fist test whether all annual es
 
 ```{r test-Rhat, }
 # Source the function that loops through all model outputs and checks convergence, i.e. is Rhat >1.1?
-source("./analyses/function-summarise_Rhat.R")
+source("./function-summarise_Rhat.R")
 
 # Run function
 summarise_Rhat("./outputs/modelOutputs")
