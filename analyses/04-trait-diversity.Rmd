@@ -109,7 +109,7 @@ names(FD_list) <- nameList
 FD_list <- readRDS("./data/FDlist13March.rds")
 
 # Source a function that summarises the matrics list
-source("./summarise_FDmatrics.R")
+source("./analyses/function-summarise_FDmatrics.R")
 
 # Run the functrion
 FDmatrics <- summarise_FDmatrics(FD_list, 100, 110)
