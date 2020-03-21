@@ -3,6 +3,13 @@
 *.rds
 *.xls
 *.csv.zip
+*daily_count_data.txt
+*visits_data.txt.zip
+*daily_count_data.txt.zip
+*site_data.txt
+*species_data.txt
+*visits_data.txt
+
 
 # Ignore word files
 *.docx
