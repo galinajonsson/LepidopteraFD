@@ -10,14 +10,8 @@ output: html_document
 
 ### Load functions and data
 ```{r clean-spp-names, eval=FALSE}
-# Load the function that extracts a selected number of estimates from the posterior distribution
-source("./extractPosterior.R")
-
-# Use the function to extract the data
-occu <- summarise_posterior('./data/modelOutputs/2019_outputs', iterations = 100, years = 110, verbose = TRUE)
-
 # Load trait data
-traits <- read.csv("./data/cleanData/CleanTraitData.csv")
+traits <- read.csv("../data/cleanData/CleanTraitData.csv")
 
 # Reclassify functional traits. Traits can be numeric, ordered, or factor. Binary traits should be numeric and only contain 0 and 1. character traits will be converted to factor. For a given trait, species with NA are excluded.
 traits$species <- as.factor(traits$species)
@@ -82,12 +76,17 @@ lingoes. "none" creates a distance matrix with only the positive eigenvalues of 
 representation via quasieuclid. See Legendre and Legendre (1998) and Legendre and Anderson
 (1999) for more details on these corrections.
 ```{r setup, include=FALSE}
-require(FD)
+# Load the function that extracts a selected number of estimates from the posterior distribution
+source("../analyses/function-extractPosterior.R")
+
+# Use the function to extract the data
+occu <- summarise_posterior('../outputs/2019_outputs/', iterations = 100, years = 110, verbose = TRUE)
 
 # Create an empty list to populate with FD outputs for each iteration
 FD_list = vector(mode = "list", length = 100)
 
 # Loop through all occu matrices in occu (each representing an iteration) and fill FD_list
+require(FD)
 for(i in 1:100){
   FD_list[[i]] <- dbFD(traits, occu[[i]], 
                      w.abun = TRUE, calc.CWM = TRUE, 
@@ -99,34 +98,24 @@ nameList <- paste("Iter", 1:100, sep = "")
 names(FD_list) <- nameList
 
 # Save the file
-#saveRDS(FD_list, "./data/FDlist13March.rds")
+#saveRDS(FD_list, "../outputs/FDoutputs/FDlist13March.rds")
 ```
 
-### Summarise and visualise matrics
 
+
+### Summarise matrics
 ```{r summarise-visualise}
 # Read the data
-FD_list <- readRDS("./data/FDlist13March.rds")
+FD_list <- readRDS("../outputs/FDoutputs/FDlist13March.rds")
 
 # Source a function that summarises the matrics list
-source("./analyses/function-summarise_FDmatrics.R")
+source("../analyses/function-summarise_FDmatrics.R")
 
 # Run the functrion
 FDmatrics <- summarise_FDmatrics(FD_list, 100, 110)
-
-require(ggplot2)
-ggplot(FDmatrics$FEveSum, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Functional evenness +- 1 SD") +
-  xlab("Year") + ylab("Functional evenness")
-
-ggplot(FDmatrics$FDivSum, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Functional divergence +- 1 SD") +
-  xlab("Year") + ylab("Functional divergence")
 ```
 
-## Make null model
+### Make null model
 
 ```{r null-model}
 require(vegan)
@@ -134,15 +123,13 @@ require(vegan)
 # Create an empty list to populate with null outputs for each iteration
 null_occu = vector(mode = "list", length = 100)
 
-
+require(FD)
 # Loop through all occu matrices in occu (each representing an iteration) and fill null_list
 for(i in 1:100){
   (nm <- nullmodel((occu[[i]]), "abuswap_r"))
   (null_occu[[i]] <- (simulate(nm, burnin=1000, nsim=1000, thin=1000))[,,1000])
 }
 
-
-require(FD)
 # Create an empty list to populate with null FD outputs for each iteration
 nullFD_list = vector(mode = "list", length = 100)
 
@@ -158,10 +145,16 @@ nameList <- paste("Iter", 1:100, sep = "")
 names(nullFD_list) <- nameList
 
 # Save the file
-#saveRDS(nullFD_list, "./data/nullFD_list19March.rds")
+#saveRDS(nullFD_list, "../outputs/FDoutputs/nullFD_list19March.rds")
+```
 
-# Source my function that summarises the matrics list
-source("./summarise_FDmatrics.R")
+### Summarise null model metrics
+```{r summarise-null-model}
+# Read nullFD_list
+nullFD_list <- readRDS("../outputs/FDoutputs/nullFD_list19March.rds")
+
+# Source a function that summarises the matrics list
+source("../analyses/function-summarise_FDmatrics.R")
 
 # Run the functrion
 nullFDmatrics <- summarise_FDmatrics(nullFD_list, 100, 110)
@@ -196,9 +189,9 @@ geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) +
 
 
 
-### Index of variance - Functional evenness
+### Find Index of variance - Functional evenness
 
-```{r FEve-SES}
+```{r FEve-IV}
 FEveIV <- FDmatrics$FEveSum[,1:101]
 
 # Loop through all FEveSum iterations in FDmatrics and find the standardised effect size
@@ -214,22 +207,6 @@ FEveIV$sd <- apply(FEveIV[,1:100], 1, sd)
 FEveIV$sem <- apply(FEveIV[,1:100], 1, std.error)
 
 
-FEveSES <- FDmatrics$FEveSum[,1:101]
-
-# Loop through all FEveSum iterations in FDmatrics and find the standardised effect size
-for(i in 1:100){
-  for(j in 1:110){
-    FEveSES[j,i] <- ((FEveSES[j,i] - nullFDmatrics$FEveSum[j,102])/nullFDmatrics$FEveSum[j,103])
-    }
-}
-
-
-require(plotrix)
-FEveSES$mean <- apply(FEveSES[,1:100], 1, mean)
-FEveSES$sd <- apply(FEveSES[,1:100], 1, sd)
-FEveSES$sem <- apply(FEveSES[,1:100], 1, std.error)
-
-
 # Plot both functional evenness for both estimates from posterior samples and null samples
 require(ggplot2)
 ggplot(FDmatrics$FEveSum, aes(x=(year+1899), y=mean)) + 
@@ -242,23 +219,17 @@ geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) +
   ggtitle("Null functional evenness +- 1 SD") +
   xlab("Year") + ylab("Functional evenness")
 
-#ggplot(FEveSES, aes(x=(year+1899), y=mean)) + 
-#geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-#  ggtitle("Functional evenness +- 1 SD (Standardised effect size)") +
-#  xlab("Year") + ylab("Functional evenness")
-
-
 ggplot(FEveIV, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
   ggtitle("Index of variance for functional evenness +- 1 SD") +
-  xlab("Year") + ylab("Functional evenness (Index of Variance)")
+  xlab("Year") + ylab("Index of Variance (Functional evenness)")
 ```
 
 
 
 ### Index of variance - Functional divergence
 
-```{r FDiv-SES}
+```{r FDiv-IV}
 FDivIV <- FDmatrics$FDivSum[,1:101]
 
 # Loop through all FEveSum iterations in FDmatrics and find the Index of variance
@@ -273,22 +244,6 @@ FDivIV$mean <- apply(FDivIV[,1:100], 1, mean)
 FDivIV$sd <- apply(FDivIV[,1:100], 1, sd)
 FDivIV$sem <- apply(FDivIV[,1:100], 1, std.error)
 
-
-FDivSES <- FDmatrics$FDivSum[,1:101]
-
-# Loop through all FEveSum iterations in FDmatrics and find the standardised effect size
-for(i in 1:100){
-  for(j in 1:110){
-    FDivSES[j,i] <- ((FDivSES[j,i] - nullFDmatrics$FDivSum[j,"mean"])/nullFDmatrics$FDivSum[j,"sd"])
-    }
-}
-head(FDmatrics$FDivSum[,1:101])
-head(FDivSES)
-
-require(plotrix)
-FDivSES$mean <- apply(FDivSES[,1:100], 1, mean)
-FDivSES$sd <- apply(FDivSES[,1:100], 1, sd)
-FDivSES$sem <- apply(FDivSES[,1:100], 1, std.error)
 
 
 # Plot both functional divergence for both estimates from posterior samples and null samples
@@ -310,45 +265,236 @@ geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) +
 
 ```
 
-```{r FDiv-SES}
+### Functional trait composition
+
+```{r CWM-summary}
+# Source a function that summarises the CWMs in the matrics list
+source("../analyses/function-summarise_CWM.R")
+
+########## Average Wingspan ##########
+
+# Summarise absolute chnage in average wingspan
 Wingspan.average <- summarise_CWM(FD_list, 10, 100,110)
-NEsp <- summarise_CWM(FD_list, 1, 100,110)
 
-Fsp <- summarise_CWM(FD_list, 2, 100,110)
-ProboscisL <- summarise_CWM(FD_list, 3, 100,110)
-EggSize <- summarise_CWM(FD_list, 4, 100,110)
+# Summarise null change in average wingspan
+NullWingspan.average <- summarise_CWM(nullFD_list, 10, 100,110)
 
-Symbiosis <- summarise_CWM(FD_list, 5, 100,110)
-Symbiosis[,1:100] <- as.numeric(Symbiosis[,1:100])
+Wingspan.averageIV <- Wingspan.average[,1:101]
 
-HibStage <- summarise_CWM(FD_list, 6, 100,110)
+# Loop through all FEveSum iterations in FDmatrics and find the Index of variance
+for(j in 1:110){
+  for(i in 1:100){
+    Wingspan.averageIV[j,i] <- (2*((Wingspan.average[j,i])/((NullWingspan.average[j,102])+(Wingspan.average[j,i]))))-1
+    }
+}
 
-POPSTR2 <- summarise_CWM(FD_list, 6, 100,110)
-Perching
-Patrolling
+require(plotrix)
+Wingspan.averageIV$mean <- apply(Wingspan.averageIV[,1:100], 1, mean)
+Wingspan.averageIV$sd <- apply(Wingspan.averageIV[,1:100], 1, sd)
+Wingspan.averageIV$sem <- apply(Wingspan.averageIV[,1:100], 1, std.error)
 
-ggplot(NEsp, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("NEsp +- 1 SD") +
-  xlab("Year") + ylab("NEsp (mm)")
 
-ggplot(Fsp, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Fsp +- 1 SD") +
-  xlab("Year") + ylab("Fsp")
-
-ggplot(ProboscisL, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("ProboscisL +- 1 SD") +
-  xlab("Year") + ylab("ProboscisL")
-
-ggplot(EggSize, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("EggSize +- 1 SD") +
-  xlab("Year") + ylab("EggSize")
-
+# plot average wingspan
 ggplot(Wingspan.average, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
   ggtitle("Wingspan.average +- 1 SD") +
   xlab("Year") + ylab("Wingspan.average (mm)")
+
+# plot average wingspan
+ggplot(NullWingspan.average, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("Null Wingspan.average +- 1 SD") +
+  xlab("Year") + ylab("Wingspan.average (mm)")
+
+# plot average wingspan
+ggplot(Wingspan.averageIV, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("Wingspan.average +- 1 SD") +
+  xlab("Year") + ylab("Indext of Variance (Wingspan.average")
+
+
+
+
+
+########## Egg size ##########
+
+# Summarise absolute chnage in average wingspan
+EggSize <- summarise_CWM(FD_list, 4, 100,110)
+
+# Summarise null change in average wingspan
+NullEggSize <- summarise_CWM(nullFD_list, 4, 100,110)
+
+EggSizeIV <- EggSize[,1:101]
+
+# Loop through all FEveSum iterations in FDmatrics and find the Index of variance
+for(j in 1:110){
+  for(i in 1:100){
+    EggSizeIV[j,i] <- (2*((EggSize[j,i])/((NullEggSize[j,102])+(EggSize[j,i]))))-1
+    }
+}
+
+require(plotrix)
+EggSizeIV$mean <- apply(EggSizeIV[,1:100], 1, mean)
+EggSizeIV$sd <- apply(EggSizeIV[,1:100], 1, sd)
+EggSizeIV$sem <- apply(EggSizeIV[,1:100], 1, std.error)
+
+
+# plot egg size
+ggplot(EggSize, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("Egg Size +- 1 SD") +
+  xlab("Year") + ylab("Egg Size")
+
+# plot average wingspan
+ggplot(NullEggSize, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("Null Egg Size +- 1 SD") +
+  xlab("Year") + ylab("Egg Size")
+
+# plot average wingspan
+ggplot(EggSizeIV, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("EggSize +- 1 SD") +
+  xlab("Year") + ylab("Indext of Variance (Egg Size")
+
+
+########## Proboscis Length ##########
+ProboscisL <- summarise_CWM(FD_list, 3, 100,110)
+
+ggplot(ProboscisL, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("ProboscisL +- 1 SD") +
+  xlab("Year") + ylab("Proboscis Length")
+
+
+########## Nectar specialisation ##########
+NEsp <- summarise_CWM(FD_list, 1, 100,110)
+
+ggplot(NEsp, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("Nectar specialisation +- 1 SD") +
+  xlab("Year") + ylab("Nectar specialisation")
+
+
+
+########## Feeding specialisation ##########
+Fsp <- summarise_CWM(FD_list, 2, 100,110)
+
+ggplot(Fsp, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("Feeding specialisation +- 1 SD") +
+  xlab("Year") + ylab("Feeding specialisation")
+
+
+
+########## Symbiosis ##########
+Symbiosis <- summarise_CWM(FD_list, 5, 100,110)
+
+# Loop through and make all columns numeric
+for(i in 1:100){
+  Symbiosis[,i] <- as.numeric(as.character(Symbiosis[,i]))
+}
+
+# summarise mean, sd and sem
+require(plotrix)
+Symbiosis$mean <- apply(Symbiosis[,1:100], 1, mean)
+Symbiosis$sd <- apply(Symbiosis[,1:100], 1, sd)
+Symbiosis$sem <- apply(Symbiosis[,1:100], 1, std.error)
+
+# plot
+ggplot(Symbiosis, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("Symbiosis +- 1 SD") +
+  xlab("Year") + ylab("Symbiosis")
+
+
+########## Hibernation stage ##########
+HibStage <- summarise_CWM(FD_list, 6, 100,110)
+
+# Loop through and make all columns numeric
+for(i in 1:100){
+  HibStage[,i] <- as.numeric(as.character(HibStage[,i]))
+}
+
+# summarise mean, sd and sem
+require(plotrix)
+HibStage$mean <- apply(HibStage[,1:100], 1, mean)
+HibStage$sd <- apply(HibStage[,1:100], 1, sd)
+HibStage$sem <- apply(HibStage[,1:100], 1, std.error)
+
+# plot
+ggplot(HibStage, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("HibStage +- 1 SD") +
+  xlab("Year") + ylab("HibStage")
+
+
+
+########## Population Structure ##########
+POPSTR2 <- summarise_CWM(FD_list, 7, 100,110)
+
+# Loop through and make all columns numeric
+for(i in 1:100){
+  POPSTR2[,i] <- as.numeric(as.character(POPSTR2[,i]))
+}
+
+# summarise mean, sd and sem
+require(plotrix)
+POPSTR2$mean <- apply(POPSTR2[,1:100], 1, mean)
+POPSTR2$sd <- apply(POPSTR2[,1:100], 1, sd)
+POPSTR2$sem <- apply(POPSTR2[,1:100], 1, std.error)
+
+# plot
+ggplot(POPSTR2, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("POPSTR2 +- 1 SD") +
+  xlab("Year") + ylab("POPSTR2")
+
+
+
+
+########## Perching ##########
+Perching <- summarise_CWM(FD_list, 8, 100,110)
+
+# Loop through and make all columns numeric
+for(i in 1:100){
+  Perching[,i] <- as.numeric(as.character(Perching[,i]))
+}
+
+# summarise mean, sd and sem
+require(plotrix)
+Perching$mean <- apply(Perching[,1:100], 1, mean)
+Perching$sd <- apply(Perching[,1:100], 1, sd)
+Perching$sem <- apply(Perching[,1:100], 1, std.error)
+
+# plot
+ggplot(Perching, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("Perching +- 1 SD") +
+  xlab("Year") + ylab("Perching")
+
+
+
+
+
+########## Patrolling ##########
+Patrolling <- summarise_CWM(FD_list, 9, 100,110)
+
+# Loop through and make all columns numeric
+for(i in 1:100){
+  Patrolling[,i] <- as.numeric(as.character(Patrolling[,i]))
+}
+
+# summarise mean, sd and sem
+require(plotrix)
+Patrolling$mean <- apply(Patrolling[,1:100], 1, mean)
+Patrolling$sd <- apply(Patrolling[,1:100], 1, sd)
+Patrolling$sem <- apply(Patrolling[,1:100], 1, std.error)
+
+# plot
+ggplot(Patrolling, aes(x=(year+1899), y=mean)) + 
+geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
+  ggtitle("Patrolling +- 1 SD") +
+  xlab("Year") + ylab("Patrolling")
+
 ```
