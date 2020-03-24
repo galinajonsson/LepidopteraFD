@@ -14,7 +14,21 @@ I run the analyses on a computer cluser and must fist test whether all annual es
 source("./function-summarise_Rhat.R")
 
 # Run function
-summarise_Rhat("./outputs/modelOutputs")
-
+RhatSummary <- summarise_Rhat("../outputs/modelOutputs/", verbose=FALSE)
+RhatSummary
 ```
 
+
+Argynnis adippe and Boloria euphrosyne have not converged, lets take a closer look:
+
+```{r non-converged-models, }
+# 
+require(sparta)
+results_Boloria_euphrosyne_watson_50k <- readRDS("../outputs/modelOutputs/results_Boloria_euphrosyne_watson_50k.rds")
+
+plot(results_Boloria_euphrosyne_watson_50k)
+
+
+source("./function-plot.Occdet_G.R")
+plot.occDet_G(results_Thymelicus_sylvestris_watson_50k_FebData)
+```
