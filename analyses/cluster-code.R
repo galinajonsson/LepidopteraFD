@@ -1072,3 +1072,191 @@ time.taken <- end.time - start.time
 # Save outputs
 saveRDS(results_Cupido_minimus_watson_50k, "/home/galina/results_Cupido_minimus_watson_50k.rds")
 saveRDS(time.taken, "/home/galina/time.taken_results_Cupido_minimus_watson_50k.rds")
+
+
+
+##########################################################################################
+##################################### 22 MARCH 2020 ######################################
+##########################################################################################
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk galina@157.140.15.118:/home/galina/results_Argynnis_adippe_watson_50k.rds .  
+# scp -o ProxyJump=galj@orca.nhm.ac.uk -r galina@ctag.nhm.ac.uk:/home/galina/ .
+# scp -o ProxyJump=galj@orca.nhm.ac.uk -r galina@157.140.15.119:/home/galina/ .
+
+
+
+
+############################################# ctag
+
+occDetdata_merged_11March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-11.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_11March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03.11.csv', header=T, na.strings=c("","NA"))
+
+
+start.time <- Sys.time()
+results_Lycaena_phlaeas_ctag_50k <- sparta::occDetFunc(taxa_name = "Lycaena.phlaeas",
+                                                        n_iterations = 50000,
+                                                        burnin = 25000,
+                                                        occDetdata = occDetdata_merged_11March2020, 
+                                                        spp_vis = spp_vis_merged_11March2020, 
+                                                        modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                        write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Lycaena_phlaeas_watson_50k, "/home/galina/results_Lycaena_phlaeas_ctag_50k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Lycaena_phlaeas_ctag_50k.rds")
+
+
+############################################# ctag
+
+occDetdata_merged_11March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-11.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_11March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03.11.csv', header=T, na.strings=c("","NA"))
+
+
+start.time <- Sys.time()
+results_Plebejus_argus_ctag_50k <- sparta::occDetFunc(taxa_name = "Plebejus.argus",
+                                                       n_iterations = 50000,
+                                                       burnin = 25000,
+                                                       occDetdata = occDetdata_merged_11March2020, 
+                                                       spp_vis = spp_vis_merged_11March2020, 
+                                                       modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                       write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Plebejus_argus_ctag_50k, "/home/galina/results_Plebejus_argus_ctag_50k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Plebejus_argus_ctag_50k.rds")
+
+
+
+
+############################################# crick
+
+occDetdata_merged_11March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-11.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_11March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03.11.csv', header=T, na.strings=c("","NA"))
+
+
+start.time <- Sys.time()
+results_Polyommatus_bellargus_crick_50k <- sparta::occDetFunc(taxa_name = "Polyommatus.bellargus",
+                                                      n_iterations = 50000,
+                                                      burnin = 25000,
+                                                      occDetdata = occDetdata_merged_11March2020, 
+                                                      spp_vis = spp_vis_merged_11March2020, 
+                                                      modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                      write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Polyommatus_bellargus_crick_50k, "/home/galina/results_Polyommatus_bellargus_crick_50k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Polyommatus_bellargus_crick_50k.rds")
+
+
+
+
+
+############################################# crick
+
+occDetdata_merged_11March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-11.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_11March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03.11.csv', header=T, na.strings=c("","NA"))
+
+
+start.time <- Sys.time()
+results_Polyommatus_coridon_crick_50k <- sparta::occDetFunc(taxa_name = "Polyommatus.coridon",
+                                                              n_iterations = 50000,
+                                                              burnin = 25000,
+                                                              occDetdata = occDetdata_merged_11March2020, 
+                                                              spp_vis = spp_vis_merged_11March2020, 
+                                                              modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                              write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Polyommatus_coridon_crick_50k, "/home/galina/results_Polyommatus_coridon_crick_50k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Polyommatus_coridon_crick_50k.rds")
+
+
+
+
+############################################# crick
+
+occDetdata_merged_11March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-11.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_11March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03.11.csv', header=T, na.strings=c("","NA"))
+
+
+start.time <- Sys.time()
+results_Hamearis_lucina_crick_50k <- sparta::occDetFunc(taxa_name = "Hamearis.lucina",
+                                                            n_iterations = 50000,
+                                                            burnin = 25000,
+                                                            occDetdata = occDetdata_merged_11March2020, 
+                                                            spp_vis = spp_vis_merged_11March2020, 
+                                                            modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                            write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Hamearis_lucina_crick_50k, "/home/galina/results_Hamearis_lucina_crick_50k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Hamearis_lucina_crick_50k.rds")
+
+
+
+
+##########################################################################################
+##################################### 23 MARCH 2020 ######################################
+##########################################################################################
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk -r galina@157.140.15.118:/home/galina/ .
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk spp_vis_merged_2020-03-23.csv galina@157.140.15.118:
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk spp_vis_merged_2020-03-23.csv galina@157.140.15.119:
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk spp_vis_merged_2020-03-23.csv galina@ctag.nhm.ac.uk:
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk occDetdata_merged_2020-03-23.csv galina@157.140.15.118:
+
+
+############################################# ctag
+
+occDetdata_merged_23March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-23.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_23March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03-23.csv', header=T, na.strings=c("","NA"))
+
+
+start.time <- Sys.time()
+results_Polyommatus_coridon_crick_50k <- sparta::occDetFunc(taxa_name = "Polyommatus.coridon",
+                                                            n_iterations = 50000,
+                                                            burnin = 25000,
+                                                            occDetdata = occDetdata_merged_11March2020, 
+                                                            spp_vis = spp_vis_merged_11March2020, 
+                                                            modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                            write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Polyommatus_coridon_crick_50k, "/home/galina/results_Polyommatus_coridon_crick_50k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Polyommatus_coridon_crick_50k.rds")
+
+
+
+
+############################################# watson
+
+occDetdata_merged_23March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-11.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_23March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03.11.csv', header=T, na.strings=c("","NA"))
+
+
+start.time <- Sys.time()
+results_Hamearis_lucina_crick_50k <- sparta::occDetFunc(taxa_name = "Hamearis.lucina",
+                                                        n_iterations = 50000,
+                                                        burnin = 25000,
+                                                        occDetdata = occDetdata_merged_23March2020, 
+                                                        spp_vis = spp_vis_merged_23March2020, 
+                                                        modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                        write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Hamearis_lucina_crick_50k, "/home/galina/results_Hamearis_lucina_crick_50k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Hamearis_lucina_crick_50k.rds")
+
+
+
