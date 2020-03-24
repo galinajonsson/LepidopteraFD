@@ -743,7 +743,7 @@ occDetdata_merged_24March2020 <- read.csv("/home/galina/occDetdata_merged_2020-0
 spp_vis_merged_24March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03-24.csv', header=T, na.strings=c("","NA"))
 
 start.time <- Sys.time()
-results_Pyronia_tithonus_watson_40k <- sparta::occDetFunc(taxa_name = "Pyronia_tithonus",
+results_Pyronia_tithonus_watson_40k <- sparta::occDetFunc(taxa_name = "Pyronia.tithonus",
                                                            n_iterations = 40000,
                                                            burnin = 20000,
                                                            thinning = 5, 
