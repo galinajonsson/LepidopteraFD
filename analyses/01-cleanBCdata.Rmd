@@ -13,7 +13,7 @@ Here, I clean and standardise the Butterfly conservation data.
 require("dplyr")
 
 # Read BNM data
-BNM <- read.delim("./data/rawData/BRCdata/BNM_butterflies/bnm_data.txt", header = TRUE, sep = "\t", dec = ".")
+BNM <- read.delim("../data/rawData/BRCdata/BNM_butterflies/bnm_data.txt", header = TRUE, sep = "\t", dec = ".")
 # 11588695 Observation
 
 # Make dates date class
@@ -36,7 +36,7 @@ BNM <- BNM %>% filter(date >= "1900-01-01")
 # 10627547
 
 # Read species data
-BNMspp <- read.delim("./data/rawData/BRCdata/BNM_butterflies/bnm_species.txt", header = TRUE, sep = "\t", dec = ".")
+BNMspp <- read.delim("../data/rawData/BRCdata/BNM_butterflies/bnm_species.txt", header = TRUE, sep = "\t", dec = ".")
 
 # Get rid of unnecisary columns
 drops <- c("INFORMAL_GROUP", "ADDITIONAL_GROUP", "NAME_ENGLISH", "RANK")
@@ -73,7 +73,7 @@ BNM$km10grid <- reformat_gr(BNM$GRIDREF_1KM, prec_out = 10000, pad_gr = FALSE)
 
 ### I will get rid of all records that are not from Great Britain
 # Load csv file specifying which country each 10x10 grid cell is in
-country_ID <- read.csv('./data/auxiliaryData/SQ_10km_CN_ID.csv', header=TRUE)
+country_ID <- read.csv('../data/auxiliaryData/SQ_10km_CN_ID.csv', header=TRUE)
 # As country names are coded from 1 to 7, rename with informative names
 cn_names <- data.frame(CN_ID = 1:7,
                        CN_NAME = c('ENGLAND','WALES','SCOTLAND','CHANNEL ISLES',
@@ -98,6 +98,8 @@ BNM <- BNM[ , !(names(BNM) %in% drops)]
 ##########################
 # Remove duplicate records
 #BNM <- unique(BNM)
+
+#test <- subset(BNM, date < 1980-01-01)
 ##########################
 
 # Remove records from UKBMS, including WCBS (dunno why they are in this data set??)
