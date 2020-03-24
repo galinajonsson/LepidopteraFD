@@ -693,6 +693,73 @@ saveRDS(time.taken, "/home/galina/time.taken_results_Melitaea_athalia_watson_40k
 
 
 
+############################################# watson 12305
+
+occDetdata_merged_24March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-24.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_24March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03-24.csv', header=T, na.strings=c("","NA"))
+
+start.time <- Sys.time()
+results_Pararge_aegeria_watson_40k <- sparta::occDetFunc(taxa_name = "Pararge.aegeria",
+                                                          n_iterations = 40000,
+                                                          burnin = 20000,
+                                                          thinning = 5, 
+                                                          occDetdata = occDetdata_merged_24March2020, 
+                                                          spp_vis = spp_vis_merged_24March2020, 
+                                                          modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                          write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Pararge_aegeria_watson_40k, "/home/galina/results_Pararge_aegeria_watson_40k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Pararge_aegeria_watson_40k.rds")
+
+
+
+############################################# watson 21855
+
+occDetdata_merged_24March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-24.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_24March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03-24.csv', header=T, na.strings=c("","NA"))
+
+start.time <- Sys.time()
+results_Polygonia_c.album_watson_40k <- sparta::occDetFunc(taxa_name = "Polygonia.c.album",
+                                                         n_iterations = 40000,
+                                                         burnin = 20000,
+                                                         thinning = 5, 
+                                                         occDetdata = occDetdata_merged_24March2020, 
+                                                         spp_vis = spp_vis_merged_24March2020, 
+                                                         modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                         write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Polygonia_c.album_watson_40k, "/home/galina/results_Polygonia_c.album_watson_40k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Polygonia_c.album_watson_40k.rds")
+
+
+
+############################################# watson 21576
+
+occDetdata_merged_24March2020 <- read.csv("/home/galina/occDetdata_merged_2020-03-24.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_24March2020 <- read.csv('/home/galina/spp_vis_merged_2020-03-24.csv', header=T, na.strings=c("","NA"))
+
+start.time <- Sys.time()
+results_Pyronia_tithonus_watson_40k <- sparta::occDetFunc(taxa_name = "Pyronia_tithonus",
+                                                           n_iterations = 40000,
+                                                           burnin = 20000,
+                                                           thinning = 5, 
+                                                           occDetdata = occDetdata_merged_24March2020, 
+                                                           spp_vis = spp_vis_merged_24March2020, 
+                                                           modeltype = c('ranwalk', 'halfcauchy', 'catlistlength'), 
+                                                           write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Pyronia_tithonus_watson_40k, "/home/galina/results_Pyronia_tithonus_watson_40k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Pyronia_tithonus_watson_40k.rds")
+
+
+
+
 
 
 
