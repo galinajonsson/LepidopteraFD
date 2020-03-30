@@ -1003,3 +1003,52 @@ saveRDS(results_Hamearis_lucina_cick_40k, "/home/galina/results_Hamearis_lucina_
 saveRDS(time.taken, "/home/galina/time.taken_results_Hamearis_lucina_cick_40k.rds")
 
 
+
+
+
+
+
+##########################################################################################
+##################################### 24 MARCH 2020 ######################################
+##########################################################################################
+
+# scp spp_vis_merged_2020-03-24.csv gjonsson18@129.31.3.6:
+# scp occDetdata_merged_2020-03-24.csv gjonsson18@129.31.3.6:
+# scp jags_4.3.0.orig.tar.gz gjonsson18@129.31.3.6:
+# /home/gjonsson18
+
+mv jags_4.3.0.orig.tar.gz ~/local/lib
+
+shows the directories and files in your current directory
+changes into the subdirectory MyDir — can include a path name goes up one directory in the hierarchy
+if MyFile is a text file, displays it in one shot to the screen (just for looking, not for editing). Text files include .py, .R, .csv, .tex, etc.
+copies file xxx to the new name yyy
+similar but moves
+# .libPaths("/home/gjonsson18/local/lib/R/site-library")
+"/usr/local/lib/R/site-library"
+#  tar xvzf jags_4.3.0.orig.tar.gz
+
+# /R/x86_64-pc-linux-gnu-library/3.6
+
+
+###Where,
+#x: This option tells tar to extract the files.
+#v: The “v” stands for “verbose.” This option will list all of the files one by one in the archive.
+#z: The z option is very important and tells the tar command to uncompress the file (gzip).
+#f: This options tells tar that you are going to give it a file name to work with.
+
+
+######### $WORK directory fath for HARVEY ONLY
+# /mnt/WORK/gjonsson18
+
+
+
+
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk occDetdata_merged_2020-03-24.csv galina@157.140.15.118:
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk spp_vis_merged_2020-03-24.csv galina@157.140.15.119:
+# scp -o ProxyJump=galj@orca.nhm.ac.uk occDetdata_merged_2020-03-24.csv galina@157.140.15.119:
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk spp_vis_merged_2020-03-24.csv galina@ctag.nhm.ac.uk:
+# scp -o ProxyJump=galj@orca.nhm.ac.uk occDetdata_merged_2020-03-24.csv galina@ctag.nhm.ac.uk:

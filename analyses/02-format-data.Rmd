@@ -330,6 +330,39 @@ spp_vis_merged_24March2020 <- rbind(formattedOccData_BMS$spp_vis,
 # Export
 #write.csv(occDetdata_merged_24March2020, '../data/formattedData/occDetdata_merged_2020-03-24.csv', row.names=FALSE)
 #write.csv(spp_vis_merged_24March2020, '../data/formattedData/spp_vis_merged_2020-03-24.csv', row.names=FALSE)
+
+
+
+
+#######################################################################
+
+
+
+###### Change list lengths (LLs) to reflect the correct data types
+# Change the list length of the formatted BMS records to a value of 1 (DT 1)
+#formattedOccData_BMS$occDetdata$L <- 22222
+
+# Change the list length of the formatted BNM records to a value of 2 (DT 2)
+#formattedOccData_BNM$occDetdata$L <- 2
+
+# Change the list length of the formatted collection data by assigning all values a value of 10 (DT 3)
+#formattedOccData_colls$occDetdata$L <- 33333
+
+
+# Merge the formated BMS, BNM and collection. Each contains two list and I will merge the two lists of the two datasets separately. 
+#occDetdata_merged_30March2020 <- rbind(formattedOccData_BMS$occDetdata,
+#                                   formattedOccData_BNM$occDetdata,
+#                                   formattedOccData_colls$occDetdata)
+#spp_vis_merged_30March2020 <- rbind(formattedOccData_BMS$spp_vis,
+#                                formattedOccData_BNM$spp_vis, 
+#                                formattedOccData_colls$spp_vis)
+
+# Export
+#write.csv(occDetdata_merged_30March2020, '../data/formattedData/occDetdata_merged_2020-03-30.csv', row.names=FALSE)
+#write.csv(spp_vis_merged_30March2020, '../data/formattedData/spp_vis_merged_2020-03-30.csv', row.names=FALSE)
+
+
+
 ```
 
 
@@ -339,25 +372,65 @@ BNM$Source <- as.factor("BNM")
 BMS$Source <- as.factor("UKBMS")
 collections$Source <- as.factor("NHCs")
 
+# Make date factor just like in collections
+BNM$date <- as.factor(BNM$date)
+BMS$date <- as.factor(BMS$date)
+
+require(data.table)
+BMSrecOccu <- (formattedOccData_BMS$occDetdata$L)
+sum((formattedOccData_BMS$occDetdata$L)) # 4491312
+length(unique((formattedOccData_BMS$occDetdata$site))) # 2577
+sum((formattedOccData_BNM$occDetdata$L)) # 1186044
+length(unique((formattedOccData_BNM$occDetdata$site))) # 2773
+sum((formattedOccData_colls$occDetdata$L)) # 33600
+length(unique((formattedOccData_colls$occDetdata$site)))# 1120
+
+
 # Combine all three record sources
-recordsUsed <- rbind(BNM, BMS, collections) # 5868518 total
+recordsUsed <- rbind(BNM, BMS, collections) # 5727189 total
 
 # Find the sites incuded in the model (i.e. sites visited in two or more years)
 require(reshape2)
-ypsBNM <- rowSums(acast(occDetdata_merged_11March2020, site ~ TP, length, value.var = 'L') > 0)
+ypsBNM <- rowSums(acast(occDetdata_merged_24March2020, site ~ TP, length, value.var = 'L') > 0)
 sites_included <- names(ypsBNM[ypsBNM >= 2]) # 2749 sites
 
 
 # Subset the data to only the data from sites used (sites visited in two or more closure peiods)
 recordsUsed <- subset(recordsUsed, km10grid %in% sites_included)
-nrow(recordsUsed) # 5868487 records from 2749 sites
+nrow(recordsUsed) # 5727158 records from 2749 sites
 
-summary(recordsUsed)
+# create visit column for each recod
+recordsUsed$visit <- as.character(paste(recordsUsed$km10grid, recordsUsed$km10grid, sep= ""))
+recordsUsed$visit <- as.character(paste(recordsUsed$visit, recordsUsed$date, sep= " "))
+recordsUsed$visit <- as.character(paste(recordsUsed$visit, "1", sep= ""))
+recordsUsed$visit <- as.factor(recordsUsed$visit)
+
+# Merge records with occDetdata to find which L each records belongs to
+occDetdata_merged_24March2020_double <- occDetdata_merged_24March2020
+occDetdata_merged_24March2020_double$visit <- as.factor(occDetdata_merged_24March2020_double$visit)
+
+# Remove source column
+recordsUsed2 <- recordsUsed[,c(1:4,6)]
+
+# Merge with occDetdata_merged_24March2020_double
+recordsUsed2 <- merge(recordsUsed2, occDetdata_merged_24March2020_double, by="visit", all.x = TRUE, all.y = FALSE)
+
+nrow(recordsUsed3)
+
+recordsUsed3 <- unique(recordsUsed2[, c(2,3,4,5,7)])
+
+recordsUsed3$L <- as.factor(as.character(recordsUsed3$L))
+
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="1"] <- "BMS"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="2"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="10"] <- "NHCs"
+
+recordsUsed3$Source <- recordsUsed3$L
 
 
 # Plot records years
 library(ggplot2)
-p <- ggplot(recordsUsed,aes(x=year, group=Source, fill=Source))+
+p <- ggplot(recordsUsed3,aes(x=year, group=Source, fill=Source))+
   geom_histogram(position="identity",alpha=0.5,binwidth = 1, boundary = 1900)+theme_bw(base_size = 15) + scale_y_sqrt()
 p <- p + labs(x = "Year", y = "Number of records", colour = "Record source")
 p <- p + guides(fill=guide_legend(title="Record source"))
@@ -397,11 +470,21 @@ p
 
 length(unique(recordsUsed$km10grid)) #2749
 
-recordsUsed_spat <- recordsUsed[,c(3,5)]
+recordsUsed_spat <- recordsUsed3[,c(3,6)]
 
 recordsUsed_spat <- aggregate(recordsUsed_spat[2], recordsUsed_spat[-2], 
                  FUN = function(X) paste(unique(X), collapse="+"))
 recordsUsed_spat$Source <- as.factor(recordsUsed_spat$Source)
+
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="BMS+BNM"] <- "BNM+BMS"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="NHCs+BNM+BMS"] <- "BNM+BMS+NHCs"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="NHCs+BMS+BNM"] <- "BNM+BMS+NHCs"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="BNM+NHCs+BMS"] <- "BNM+BMS+NHCs"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="BMS+BNM+NHCs"] <- "BNM+BMS+NHCs"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="BMS+NHCs+BNM"] <- "BNM+BMS+NHCs"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="BNM+NHCs"] <- "NHCs+BNM"
+recordsUsed_spat$Source <- droplevels(recordsUsed_spat$Source)
+
 
 # Plot maps
 require(BRCmap)
@@ -423,7 +506,7 @@ BRCmap::plotUK_gr_cats(recordsUsed_spat$km10grid, recordsUsed_spat$Source,att_co
 ```{r summarise-data-used-spatially, message=FALSE, error=FALSE, warning=FALSE}
 require(dplyr)
 
-recordsPerGrid <- recordsUsed %>% group_by(km10grid) %>% tally()
+recordsPerGrid <- recordsUsed3 %>% group_by(km10grid) %>% tally()
 
 recordsPerGrid$nRecordsCat <- cut(recordsPerGrid$n, breaks=c(0, 10, 100, 500, 1000, Inf), labels=c("1-10", "11-100", "101-500", "501-1000", ">1000"))
 
@@ -478,7 +561,7 @@ visitsSummary2 <- function(x) {
 }
 
 
-LLsymmary <- visitsSummary2(occDetdata_merged_March2020)
+LLsymmary <- visitsSummary2(occDetdata_merged_24March2020)
 LLsymmary
 plot((LLsymmary$TP+1899), LLsymmary$PercRevisited)
 plot((LLsymmary$TP+1899), LLsymmary$meanRevisits)
