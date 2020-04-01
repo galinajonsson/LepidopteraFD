@@ -273,12 +273,12 @@ BNM_temp$visitLL <- paste(BNM_temp$L, BNM_temp$visit, sep = "") # 1243721
 BMS_temp$visitLL <- paste(BMS_temp$L, BMS_temp$visit, sep = "") # 240060
 
 # Find visitLL values present in BMS that are also present in BNM
-commonVisits <- merge(BMS_temp, BNM_temp, by.x = "visitLL", by.y = "visitLL") # 8523
+commonVisits <- merge(BMS_temp, BNM_temp, by.x = "visit", by.y = "visit") # 8523
 
 # Will remove these from the BNM dataset
-formattedOccData_BNM$occDetdata <- formattedOccData_BNM$occDetdata[!(formattedOccData_BNM$occDetdata$visit %in% commonVisits$visit.y),]
+formattedOccData_BNM$occDetdata <- formattedOccData_BNM$occDetdata[!(formattedOccData_BNM$occDetdata$visit %in% commonVisits$visit),]
 
-formattedOccData_BNM$spp_vis <- formattedOccData_BNM$spp_vis[!(formattedOccData_BNM$spp_vis$visit %in% commonVisits$visit.y),]
+formattedOccData_BNM$spp_vis <- formattedOccData_BNM$spp_vis[!(formattedOccData_BNM$spp_vis$visit %in% commonVisits$visit),]
 # nrow = 1235198
 ########################## 22 March ###################################
 
@@ -340,22 +340,21 @@ spp_vis_merged_24March2020 <- rbind(formattedOccData_BMS$spp_vis,
 
 ###### Change list lengths (LLs) to reflect the correct data types
 # Change the list length of the formatted BMS records to a value of 1 (DT 1)
-#formattedOccData_BMS$occDetdata$L <- 22222
+formattedOccData_BMS$occDetdata$L <- 22222
 
 # Change the list length of the formatted BNM records to a value of 2 (DT 2)
-#formattedOccData_BNM$occDetdata$L <- 2
+formattedOccData_BNM$occDetdata$L <- 2
 
 # Change the list length of the formatted collection data by assigning all values a value of 10 (DT 3)
-#formattedOccData_colls$occDetdata$L <- 33333
-
+formattedOccData_colls$occDetdata$L <- 33333
 
 # Merge the formated BMS, BNM and collection. Each contains two list and I will merge the two lists of the two datasets separately. 
-#occDetdata_merged_30March2020 <- rbind(formattedOccData_BMS$occDetdata,
-#                                   formattedOccData_BNM$occDetdata,
-#                                   formattedOccData_colls$occDetdata)
-#spp_vis_merged_30March2020 <- rbind(formattedOccData_BMS$spp_vis,
-#                                formattedOccData_BNM$spp_vis, 
-#                                formattedOccData_colls$spp_vis)
+occDetdata_merged_30March2020 <- rbind(formattedOccData_BMS$occDetdata,
+                                   formattedOccData_BNM$occDetdata,
+                                   formattedOccData_colls$occDetdata)
+spp_vis_merged_30March2020 <- rbind(formattedOccData_BMS$spp_vis,
+                                formattedOccData_BNM$spp_vis, 
+                                formattedOccData_colls$spp_vis)
 
 # Export
 #write.csv(occDetdata_merged_30March2020, '../data/formattedData/occDetdata_merged_2020-03-30.csv', row.names=FALSE)
