@@ -9,34 +9,34 @@ output: html_document
 
 ### Read trait types
 ```{r load-trait-data, include=FALSE}
-AsherTraits <- read.csv("../leps/data/traitData/Middleton_Welling2017_Asher.csv")
+AsherTraits <- read.csv("../data/traitData/Middleton_Welling2017_Asher.csv")
 AsherTraits<-AsherTraits[AsherTraits$Species!="Maculinea arion",]
 AsherTraits<-AsherTraits[AsherTraits$Species!="Leptidea juvernica",]
 AsherTraits <- droplevels(AsherTraits)
 
-DennisTraits <- read.csv("../leps/data/traitData/Middleton_Welling2017_Dennis.csv")
+DennisTraits <- read.csv("../data/traitData/Middleton_Welling2017_Dennis.csv")
 DennisTraits<-DennisTraits[DennisTraits$Species!="Maculinea arion",]
 DennisTraits<-DennisTraits[DennisTraits$Species!="Leptidea juvernica",]
 DennisTraits <- droplevels(DennisTraits)
 
-EelesTraits <- read.csv("../leps/data/traitData/Middleton_Welling2017_Eeles.csv")
+EelesTraits <- read.csv("../data/traitData/Middleton_Welling2017_Eeles.csv")
 EelesTraits<-EelesTraits[EelesTraits$Species!="Maculinea arion",]
 EelesTraits<-EelesTraits[EelesTraits$Species!="Leptidea juvernica",]
 EelesTraits <- droplevels(EelesTraits)
 
-EmmetTraits <- read.csv("../leps/data/traitData/Middleton_Welling2017_Emmet.csv")
+EmmetTraits <- read.csv("../data/traitData/Middleton_Welling2017_Emmet.csv")
 EmmetTraits<-EmmetTraits[EmmetTraits$Species!="Maculinea arion",]
 EmmetTraits<-EmmetTraits[EmmetTraits$Species!="Leptidea juvernica",]
 EmmetTraits<-EmmetTraits[EmmetTraits$Species!="",]
 EmmetTraits <- droplevels(EmmetTraits)
 
-NewlandTraits <- read.csv("../leps/data/traitData/Middleton_Welling2017_Newland.csv")
+NewlandTraits <- read.csv("../data/traitData/Middleton_Welling2017_Newland.csv")
 NewlandTraits<-NewlandTraits[NewlandTraits$Species!="Maculinea arion",]
 NewlandTraits<-NewlandTraits[NewlandTraits$Species!="Leptidea juvernica",]
 NewlandTraits<-NewlandTraits[NewlandTraits$Species!="",]
 NewlandTraits <- droplevels(NewlandTraits)
 
-ThomasTraits <- read.csv("../leps/data/traitData/Middleton_Welling2017_Thomas.csv")
+ThomasTraits <- read.csv("../data/traitData/Middleton_Welling2017_Thomas.csv")
 ThomasTraits<-ThomasTraits[ThomasTraits$Species!="Maculinea arion",]
 ThomasTraits<-ThomasTraits[ThomasTraits$Species!="Leptidea juvernica",]
 ThomasTraits<-ThomasTraits[ThomasTraits$Species!="",]

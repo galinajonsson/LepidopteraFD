@@ -1,3 +1,18 @@
+###### CODE FOR MIX LIST LENGTH
+
+#results_Hesperia_comma_test <- sparta::occDetFunc(taxa_name = "Hesperia.comma",
+#                                                  n_iterations = 100,
+#                                                  burnin = 50,
+#                                                  thinning = 3, 
+#                                                  occDetdata = occDetdata_merged_30March2020, 
+#                                                  spp_vis = spp_vis_merged_30March2020, 
+#                                                  modeltype = c('ranwalk', 'halfcauchy', 'mixlistlength'), 
+#                                                  write_results = FALSE)
+
+
+
+
+
 ##########################################################################################
 ##################################### 24 MARCH 2020 ######################################
 ##########################################################################################
@@ -1027,6 +1042,8 @@ similar but moves
 # .libPaths("/home/gjonsson18/local/lib/R/site-library")
 "/usr/local/lib/R/site-library"
 #  tar xvzf jags_4.3.0.orig.tar.gz
+
+# ./configure --libdir=/gjonsson18/local/lib64
 
 # /R/x86_64-pc-linux-gnu-library/3.6
 
