@@ -14,21 +14,28 @@ I run the analyses on a computer cluser and must fist test whether all annual es
 source("./function-summarise_Rhat.R")
 
 # Run function
-RhatSummary <- summarise_Rhat("../outputs/modelOutputs/", verbose=FALSE)
+RhatSummary <- summarise_Rhat("../outputs/2019_outputs/", verbose=FALSE)
 RhatSummary
 ```
-
+7 April: all 26 species have converged
 
 Argynnis adippe and Boloria euphrosyne have not converged, lets take a closer look:
 
 ```{r non-converged-models, }
 # 
 require(sparta)
-results_Boloria_euphrosyne_watson_50k <- readRDS("../outputs/modelOutputs/results_Boloria_euphrosyne_watson_50k.rds")
+results_Aricia_artaxerxes_cick_40k <- readRDS("../outputs/modelOutputsMarch/results_Aricia_artaxerxes_cick_40k.rds")
 
-plot(results_Boloria_euphrosyne_watson_50k)
+results_Cupido_minimus_cick_40k <- readRDS("../outputs/modelOutputsMarch/results_Cupido_minimus_cick_40k.rds")
+
+results_Polyommatus_bellargus_cick_40k <- readRDS("../outputs/modelOutputsMarch/results_Polyommatus_bellargus_cick_40k.rds")
+
+
+plot.occDet_G(results_Aricia_artaxerxes_cick_40k)
+plot.occDet_G(results_Cupido_minimus_cick_40k)
+plot.occDet_G(results_Polyommatus_bellargus_cick_40k)
 
 
 source("./function-plot.Occdet_G.R")
-plot.occDet_G(results_Thymelicus_sylvestris_watson_50k_FebData)
+plot.occDet_G(results_Argynnis_paphia_watson_50k)
 ```

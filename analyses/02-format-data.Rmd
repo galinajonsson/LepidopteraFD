@@ -20,7 +20,7 @@ require("sparta")
 #######################################
 ################ BNM ##################
 #######################################
-BNM <- read.csv("../data/cleanData/bnm_occurence_clean.csv", header = TRUE, na.strings=c("", " ", "NA"))
+BNM <- read.csv("../data/cleanData/bnm_clean7April.csv", header = TRUE, na.strings=c("", " ", "NA"))
 
 # Create a date class
 BNM$date <- as.Date(BNM$date, "%Y-%m-%d")
@@ -28,13 +28,10 @@ BNM$date <- as.Date(BNM$date, "%Y-%m-%d")
 # Create a year column
 BNM$year <- as.integer(format(as.Date(BNM$date, format="%Y-%m-%d"),"%Y"))
 
-# max(BNM$year) # 2015
-
-
 #######################################
 ############### UKBMS #################
 #######################################
-BMS <- read.csv("../data/cleanData/bms_clean.csv", header = TRUE, na.strings=c("", " ", "NA"))
+BMS <- read.csv("../data/cleanData/bms_clean7April.csv", header = TRUE, na.strings=c("", " ", "NA"))
 
 # Create a date class
 BMS$date <- as.Date(BMS$date, "%Y-%m-%d")
@@ -42,10 +39,6 @@ BMS$date <- as.Date(BMS$date, "%Y-%m-%d")
 # Create a year column
 BMS$year <- as.integer(format(as.Date(BMS$date, format="%Y-%m-%d"),"%Y"))
 
-# max(BMS$year) # 2018
-
-# remove BMS reords prior to 2016
-BMS <- BMS[(BMS$year<=2015),]
 
 #######################################
 ################ NHM ##################
@@ -200,7 +193,7 @@ collections <- droplevels(subset(collections, species != "Nymphalis polychloros"
 ```{r format-data, message=FALSE, error=FALSE, warning=FALSE}
 ################# BNM DATA ###################
 # Remove duplicate records (ignoring the source column, whihc is column 4)
-BNM <- unique(BNM[,c(1:3,5)])
+BNM <- unique(BNM[,c(1:3,6)])
 
 # Format data
 formattedOccData_BNM <- sparta::formatOccData(taxa = as.factor(BNM$species), 
@@ -212,7 +205,7 @@ as.character(paste(BNM$km10grid,
   
 ################ UKBMS DATA ##################
 # Remove duplicate records (ignoring the source column, whihc is column 4)
-BMS <- unique(BMS[,c(1:3,5)])
+BMS <- unique(BMS[,c(1:3,6)])
 # 745255 records in total
 
 # Format
@@ -276,9 +269,9 @@ BMS_temp$visitLL <- paste(BMS_temp$L, BMS_temp$visit, sep = "") # 240060
 commonVisits <- merge(BMS_temp, BNM_temp, by.x = "visit", by.y = "visit") # 8523
 
 # Will remove these from the BNM dataset
-formattedOccData_BNM$occDetdata <- formattedOccData_BNM$occDetdata[!(formattedOccData_BNM$occDetdata$visit %in% commonVisits$visit),]
+#formattedOccData_BNM$occDetdata <- #formattedOccData_BNM$occDetdata[!(formattedOccData_BNM$occDetdata$visit %in% #commonVisits$visit),]
 
-formattedOccData_BNM$spp_vis <- formattedOccData_BNM$spp_vis[!(formattedOccData_BNM$spp_vis$visit %in% commonVisits$visit),]
+#formattedOccData_BNM$spp_vis <- #formattedOccData_BNM$spp_vis[!(formattedOccData_BNM$spp_vis$visit %in% #commonVisits$visit),]
 # nrow = 1235198
 ########################## 22 March ###################################
 
@@ -295,16 +288,16 @@ ggplot(test3, aes(List, stat(density), colour = source)) +
   scale_color_manual(values=c('black', "salmon"))
 
 #### Move anything with a LL higher than 3 in BNM to BMS
-BNMoverThreeOccDet <- subset(formattedOccData_BNM$occDetdata, L >3) # 536505
-BNMoverThreeSppVis <- formattedOccData_BNM$spp_vis[(formattedOccData_BNM$spp_vis$visit %in% BNMoverThreeOccDet$visit),] # 536505
+#BNMoverThreeOccDet <- subset(formattedOccData_BNM$occDetdata, L >3) # 536505
+#BNMoverThreeSppVis <- formattedOccData_BNM$spp_vis[(formattedOccData_BNM$spp_vis$visit #%in% BNMoverThreeOccDet$visit),] # 536505
 
 # Add these to BMS
-formattedOccData_BMS$occDetdata <- rbind(formattedOccData_BMS$occDetdata, BNMoverThreeOccDet) # 776565
-formattedOccData_BMS$spp_vis <- rbind(formattedOccData_BMS$spp_vis, BNMoverThreeSppVis) # 776565
+#formattedOccData_BMS$occDetdata <- rbind(formattedOccData_BMS$occDetdata, #BNMoverThreeOccDet) # 776565
+#formattedOccData_BMS$spp_vis <- rbind(formattedOccData_BMS$spp_vis, BNMoverThreeSppVis) # #776565
 
 # remove the BNM with LL less than 4
-formattedOccData_BNM$occDetdata <- subset(formattedOccData_BNM$occDetdata, L <4) # 698693
-formattedOccData_BNM$spp_vis <- formattedOccData_BNM$spp_vis[(formattedOccData_BNM$spp_vis$visit %in% formattedOccData_BNM$occDetdata$visit),] # 698693
+#formattedOccData_BNM$occDetdata <- subset(formattedOccData_BNM$occDetdata, L <4) # 698693
+#formattedOccData_BNM$spp_vis <- #formattedOccData_BNM$spp_vis[(formattedOccData_BNM$spp_vis$visit %in% #formattedOccData_BNM$occDetdata$visit),] # 698693
 
 #######################################################################
 
@@ -343,22 +336,22 @@ spp_vis_merged_24March2020 <- rbind(formattedOccData_BMS$spp_vis,
 formattedOccData_BMS$occDetdata$L <- 22222
 
 # Change the list length of the formatted BNM records to a value of 2 (DT 2)
-formattedOccData_BNM$occDetdata$L <- 2
+#formattedOccData_BNM$occDetdata$L <- 2
 
 # Change the list length of the formatted collection data by assigning all values a value of 10 (DT 3)
 formattedOccData_colls$occDetdata$L <- 33333
 
 # Merge the formated BMS, BNM and collection. Each contains two list and I will merge the two lists of the two datasets separately. 
-occDetdata_merged_30March2020 <- rbind(formattedOccData_BMS$occDetdata,
+occDetdata_merged_7April2020 <- rbind(formattedOccData_BMS$occDetdata,
                                    formattedOccData_BNM$occDetdata,
                                    formattedOccData_colls$occDetdata)
-spp_vis_merged_30March2020 <- rbind(formattedOccData_BMS$spp_vis,
+spp_vis_merged_7April2020 <- rbind(formattedOccData_BMS$spp_vis,
                                 formattedOccData_BNM$spp_vis, 
                                 formattedOccData_colls$spp_vis)
 
 # Export
-#write.csv(occDetdata_merged_30March2020, '../data/formattedData/occDetdata_merged_2020-03-30.csv', row.names=FALSE)
-#write.csv(spp_vis_merged_30March2020, '../data/formattedData/spp_vis_merged_2020-03-30.csv', row.names=FALSE)
+#write.csv(occDetdata_merged_7April2020, '../data/formattedData/occDetdata_merged_2020-04-07.csv', row.names=FALSE)
+#write.csv(spp_vis_merged_7April2020, '../data/formattedData/spp_vis_merged_2020-04-07.csv', row.names=FALSE)
 
 
 
@@ -377,11 +370,11 @@ BMS$date <- as.factor(BMS$date)
 
 require(data.table)
 BMSrecOccu <- (formattedOccData_BMS$occDetdata$L)
-sum((formattedOccData_BMS$occDetdata$L)) # 4491312
-length(unique((formattedOccData_BMS$occDetdata$site))) # 2577
-sum((formattedOccData_BNM$occDetdata$L)) # 1186044
+#sum((formattedOccData_BMS$occDetdata$L)) # 1333791
+length(unique((formattedOccData_BMS$occDetdata$site))) # 1308
+sum((formattedOccData_BNM$occDetdata$L)) # 4219404
 length(unique((formattedOccData_BNM$occDetdata$site))) # 2773
-sum((formattedOccData_colls$occDetdata$L)) # 33600
+#sum((formattedOccData_colls$occDetdata$L)) # 33600
 length(unique((formattedOccData_colls$occDetdata$site)))# 1120
 
 
@@ -390,13 +383,13 @@ recordsUsed <- rbind(BNM, BMS, collections) # 5727189 total
 
 # Find the sites incuded in the model (i.e. sites visited in two or more years)
 require(reshape2)
-ypsBNM <- rowSums(acast(occDetdata_merged_24March2020, site ~ TP, length, value.var = 'L') > 0)
-sites_included <- names(ypsBNM[ypsBNM >= 2]) # 2749 sites
+ypsBNM <- rowSums(acast(occDetdata_merged_7April2020, site ~ TP, length, value.var = 'L') > 0)
+sites_included <- names(ypsBNM[ypsBNM >= 2]) # 2750 sites
 
 
 # Subset the data to only the data from sites used (sites visited in two or more closure peiods)
 recordsUsed <- subset(recordsUsed, km10grid %in% sites_included)
-nrow(recordsUsed) # 5727158 records from 2749 sites
+nrow(recordsUsed) # 5586769 records from 2750 sites
 
 # create visit column for each recod
 recordsUsed$visit <- as.character(paste(recordsUsed$km10grid, recordsUsed$km10grid, sep= ""))
@@ -405,24 +398,54 @@ recordsUsed$visit <- as.character(paste(recordsUsed$visit, "1", sep= ""))
 recordsUsed$visit <- as.factor(recordsUsed$visit)
 
 # Merge records with occDetdata to find which L each records belongs to
-occDetdata_merged_24March2020_double <- occDetdata_merged_24March2020
-occDetdata_merged_24March2020_double$visit <- as.factor(occDetdata_merged_24March2020_double$visit)
+occDetdata_merged_7April2020_double <- occDetdata_merged_7April2020
+occDetdata_merged_7April2020_double$visit <- as.factor(occDetdata_merged_7April2020_double$visit)
 
 # Remove source column
 recordsUsed2 <- recordsUsed[,c(1:4,6)]
 
 # Merge with occDetdata_merged_24March2020_double
-recordsUsed2 <- merge(recordsUsed2, occDetdata_merged_24March2020_double, by="visit", all.x = TRUE, all.y = FALSE)
+recordsUsed2 <- merge(recordsUsed2, occDetdata_merged_7April2020_double, by="visit", all.x = TRUE, all.y = FALSE)
 
-nrow(recordsUsed3)
+nrow(recordsUsed2) # 5586769 records
 
 recordsUsed3 <- unique(recordsUsed2[, c(2,3,4,5,7)])
 
+nrow(recordsUsed3) # 5586769 records
+
 recordsUsed3$L <- as.factor(as.character(recordsUsed3$L))
 
-levels(recordsUsed3$L)[levels(recordsUsed3$L)=="1"] <- "BMS"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="1"] <- "BNM"
 levels(recordsUsed3$L)[levels(recordsUsed3$L)=="2"] <- "BNM"
-levels(recordsUsed3$L)[levels(recordsUsed3$L)=="10"] <- "NHCs"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="3"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="4"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="5"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="6"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="7"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="8"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="9"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="10"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="11"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="12"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="13"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="14"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="15"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="16"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="17"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="18"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="19"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="20"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="21"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="22"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="23"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="24"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="25"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="26"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="27"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="28"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="30"] <- "BNM"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="22222"] <- "BMS"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="33333"] <- "NHCs"
 
 recordsUsed3$Source <- recordsUsed3$L
 
@@ -467,7 +490,7 @@ p
 
 ```{r summarise-data-used-spatially, message=FALSE, error=FALSE, warning=FALSE}
 
-length(unique(recordsUsed$km10grid)) #2749
+length(unique(recordsUsed$km10grid)) #2750
 
 recordsUsed_spat <- recordsUsed3[,c(3,6)]
 
@@ -560,7 +583,7 @@ visitsSummary2 <- function(x) {
 }
 
 
-LLsymmary <- visitsSummary2(occDetdata_merged_24March2020)
+LLsymmary <- visitsSummary2(occDetdata_merged_7April2020)
 LLsymmary
 plot((LLsymmary$TP+1899), LLsymmary$PercRevisited)
 plot((LLsymmary$TP+1899), LLsymmary$meanRevisits)

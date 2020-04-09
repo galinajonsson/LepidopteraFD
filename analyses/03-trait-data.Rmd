@@ -323,23 +323,23 @@ Below are the traits I will extact:
 
 ```{r tidy-dennis-trait-data, eval=FALSE}
 # Load the trait data (this contains 208 traits)
-rawTraits <- read.csv("../leps/data/traitData/Isaac_Dennis_traits/speciestraits208.csv")
+rawTraits <- read.csv("../data/traitData/Isaac_Dennis_traits/speciestraits208.csv")
 
 require(tidyverse)
 traits2 <- rawTraits %>% select(scientificname, 
-                   NEsp, # Nectar specialisation
+                                mobilityscore, # Mobility score
                    Fsp, # Adult feeding specialisation
                    ProboscisL, # Proboscis length
-                   RPL, # Relative proboscis length
                    EggSize, # Egg size
-                   RES, # Relative egg size
+                   ELC, # Egg load
                    Symbiosis, # Symbiosis in early stadia
-                   HibStage, # Hibernation stage (1 to 4, 2.5 for P. aegeria)
-                   HSegg, # Hibernation stage (egg stage)
-                   HSlarva, # Hibernation stage (larval stage)
-                   HSpupa, # Hibernation stage (pupal stage)
-                   HSadult, # Hibernation stage (adult stage)
-                   POPSTR2 # Population structure
+                   VoltScore, # Voltinism Score
+                   AH, # Adult thermal hardiness score
+                   PhagyAll, # Phagy score
+                   HPphenRange, # Number of host plants in range
+                   POPSTR1, # Population structure score
+                   PopStr1t, # Breeding population structure score
+                   METApop # Metapopulation structure score
                    )
 
 
@@ -367,23 +367,23 @@ traits <- merge(traits2, traits, by.x = "scientificname", by.y = "Species", all.
 
 # Reclassify functional traits. Traits can be numeric, ordered, or factor. Binary traits should be numeric and only contain 0 and 1. character traits will be converted to factor. For a given trait, species with NA are excluded.
 traits$species <- as.factor(traits$scientificname)
-traits$NEsp <- as.numeric(traits$NEsp)
+#traits$NEsp <- as.numeric(traits$NEsp)
 traits$Fsp <- as.numeric(traits$Fsp)
 traits$ProboscisL <- as.numeric(traits$ProboscisL)
-traits$RPL <- as.numeric(traits$RPL)
+#traits$RPL <- as.numeric(traits$RPL)
 traits$EggSize <- as.numeric(traits$EggSize)
-traits$RES <- as.numeric(traits$RES)
+#traits$RES <- as.numeric(traits$RES)
 traits$Symbiosis <- as.ordered(traits$Symbiosis)
-traits$HibStage <- as.ordered(traits$HibStage)
-traits$HSegg <- as.numeric(traits$HSegg)
-traits$HSlarva <- as.numeric(traits$HSlarva)
-traits$HSpupa <- as.numeric(traits$HSpupa)
-traits$HSadult <- as.numeric(traits$HSadult)
-traits$POPSTR2 <- as.ordered(traits$POPSTR2)
+#traits$HibStage <- as.ordered(traits$HibStage)
+#traits$HSegg <- as.numeric(traits$HSegg)
+#traits$HSlarva <- as.numeric(traits$HSlarva)
+#traits$HSpupa <- as.numeric(traits$HSpupa)
+#traits$HSadult <- as.numeric(traits$HSadult)
+#traits$POPSTR2 <- as.ordered(traits$POPSTR2)
 traits$Overwintering.stage <- as.ordered(traits$Overwintering.stage)
-traits$Perching <- as.numeric(traits$Perching)
-traits$Patrolling <- as.numeric(traits$Patrolling)
-traits$Mate.locating.strategy <- as.factor(traits$Mate.locating.strategy)
+#traits$Perching <- as.numeric(traits$Perching)
+#traits$Patrolling <- as.numeric(traits$Patrolling)
+#traits$Mate.locating.strategy <- as.factor(traits$Mate.locating.strategy)
 traits$Wingspan.average <- as.numeric(traits$Wingspan.average)
 
 
@@ -391,13 +391,16 @@ traits$Wingspan.average <- as.numeric(traits$Wingspan.average)
 traits <- subset(traits, select = -c(Wingspan.min,
                                      Wingspan.max,
                                      Wingspan.variation,
-                                     scientificname))
+                                     scientificname,
+                                     Perching,
+                                     Patrolling,
+                                     Mate.locating.strategy))
 
 # Fix species names to match models' species names
 traits$species <- gsub(" ", ".", traits$species)
 
 # Save trait data
-#write.csv(traits, './data/cleanData/CleanTraitData.csv', row.names=FALSE)
+#write.csv(traits, '../data/cleanData/CleanTraitData.csv', row.names=FALSE)
 ```
 
 
