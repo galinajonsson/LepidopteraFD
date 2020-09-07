@@ -1391,3 +1391,197 @@ saveRDS(time.taken, "/home/galina/time.taken_results_Ochlodes_sylvanus_watson_mi
 
 # scp -o ProxyJump=galj@orca.nhm.ac.uk -r galina@157.140.15.118:/home/galina/ .
 # scp -o ProxyJump=galj@orca.nhm.ac.uk -r galina@157.140.15.119:/home/galina/ .
+
+
+
+
+
+
+
+##########################################################################################
+####################################### 7 SEP 2020 #######################################
+##########################################################################################
+
+# scp -o ProxyJump=galj@orca.nhm.ac.uk -r galina@ctag:/home/galina/ .
+
+
+
+
+
+
+
+
+
+
+############################################# watson 10408
+occDetdata_merged_7April2020 <- read.csv("/home/galina/occDetdata_merged_2020-04-07.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_7April2020 <- read.csv('/home/galina/spp_vis_merged_2020-04-07.csv', header=T, na.strings=c("","NA"))
+
+library(sparta, lib = "~/R_libs")
+
+start.time <- Sys.time()
+results_Pyronia_tithonus_watson_mixLL_80k <- sparta::occDetFunc(taxa_name = "Pyronia.tithonus",
+                                                            n_iterations = 80000,
+                                                            burnin = 40000,
+                                                            thinning = 3, 
+                                                            occDetdata = occDetdata_merged_7April2020, 
+                                                            spp_vis = spp_vis_merged_7April2020, 
+                                                            modeltype = c('ranwalk', 'halfcauchy', 'mixlistlength'), 
+                                                            write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Pyronia_tithonus_watson_mixLL_80k, "/home/galina/results_Pyronia_tithonus_watson_mixLL_80k.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Pyronia_tithonus_watson_mixLL_80k.rds")
+
+
+
+
+
+
+
+
+
+
+############################################# crick 32151
+occDetdata_merged_7April2020 <- read.csv("/home/galina/occDetdata_merged_2020-04-07.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_7April2020 <- read.csv('/home/galina/spp_vis_merged_2020-04-07.csv', header=T, na.strings=c("","NA"))
+
+library(sparta, lib = "~/R_libs")
+
+start.time <- Sys.time()
+results_Polyommatus_icarus_crick_mixLL <- sparta::occDetFunc(taxa_name = "Polyommatus.icarus",
+                                                              n_iterations = 50000,
+                                                              burnin = 25000,
+                                                                thinning = 3, 
+                                                                occDetdata = occDetdata_merged_7April2020, 
+                                                                spp_vis = spp_vis_merged_7April2020, 
+                                                                modeltype = c('ranwalk', 'halfcauchy', 'mixlistlength'), 
+                                                                write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Polyommatus_icarus_crick_mixLL, "/home/galina/results_Polyommatus_icarus_crick_mixLL.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Polyommatus_icarus_crick_mixLL.rds")
+
+
+
+
+
+
+
+
+
+
+############################################# crick 14306
+occDetdata_merged_7April2020 <- read.csv("/home/galina/occDetdata_merged_2020-04-07.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_7April2020 <- read.csv('/home/galina/spp_vis_merged_2020-04-07.csv', header=T, na.strings=c("","NA"))
+
+library(sparta, lib = "~/R_libs")
+
+start.time <- Sys.time()
+results_Satyrium_pruni_crick_mixLL <- sparta::occDetFunc(taxa_name = "Satyrium.pruni",
+                                                              n_iterations = 50000,
+                                                              burnin = 25000,
+                                                              thinning = 3, 
+                                                              occDetdata = occDetdata_merged_7April2020, 
+                                                              spp_vis = spp_vis_merged_7April2020, 
+                                                              modeltype = c('ranwalk', 'halfcauchy', 'mixlistlength'), 
+                                                              write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Satyrium_pruni_crick_mixLL, "/home/galina/results_Satyrium_pruni_crick_mixLL.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Satyrium_pruni_crick_mixLL.rds")
+
+
+
+
+
+
+
+
+
+
+############################################# crick 25763
+occDetdata_merged_7April2020 <- read.csv("/home/galina/occDetdata_merged_2020-04-07.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_7April2020 <- read.csv('/home/galina/spp_vis_merged_2020-04-07.csv', header=T, na.strings=c("","NA"))
+
+library(sparta, lib = "~/R_libs")
+
+start.time <- Sys.time()
+results_Satyrium_w.album_crick_mixLL <- sparta::occDetFunc(taxa_name = "Satyrium.w.album",
+                                                         n_iterations = 50000,
+                                                         burnin = 25000,
+                                                         thinning = 3, 
+                                                         occDetdata = occDetdata_merged_7April2020, 
+                                                         spp_vis = spp_vis_merged_7April2020, 
+                                                         modeltype = c('ranwalk', 'halfcauchy', 'mixlistlength'), 
+                                                         write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Satyrium_w.album_crick_mixLL, "/home/galina/results_Satyrium_w.album_crick_mixLL.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Satyrium_w.album_crick_mixLL.rds")
+
+
+
+
+
+
+
+
+
+
+############################################# crick 16718
+occDetdata_merged_7April2020 <- read.csv("/home/galina/occDetdata_merged_2020-04-07.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_7April2020 <- read.csv('/home/galina/spp_vis_merged_2020-04-07.csv', header=T, na.strings=c("","NA"))
+
+library(sparta, lib = "~/R_libs")
+
+start.time <- Sys.time()
+results_Thecla_betulae_crick_mixLL <- sparta::occDetFunc(taxa_name = "Thecla.betulae",
+                                                           n_iterations = 50000,
+                                                           burnin = 25000,
+                                                           thinning = 3, 
+                                                           occDetdata = occDetdata_merged_7April2020, 
+                                                           spp_vis = spp_vis_merged_7April2020, 
+                                                           modeltype = c('ranwalk', 'halfcauchy', 'mixlistlength'), 
+                                                           write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Thecla_betulae_crick_mixLL, "/home/galina/results_Thecla_betulae_crick_mixLL.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Thecla_betulae_crick_mixLL.rds")
+
+
+
+
+
+
+
+
+
+
+############################################# crick 1211
+occDetdata_merged_7April2020 <- read.csv("/home/galina/occDetdata_merged_2020-04-07.csv", header=T, na.strings=c("","NA")) 
+spp_vis_merged_7April2020 <- read.csv('/home/galina/spp_vis_merged_2020-04-07.csv', header=T, na.strings=c("","NA"))
+
+library(sparta, lib = "~/R_libs")
+
+start.time <- Sys.time()
+results_Hamearis_lucina_crick_mixLL <- sparta::occDetFunc(taxa_name = "Hamearis.lucina",
+                                                         n_iterations = 50000,
+                                                         burnin = 25000,
+                                                         thinning = 3, 
+                                                         occDetdata = occDetdata_merged_7April2020, 
+                                                         spp_vis = spp_vis_merged_7April2020, 
+                                                         modeltype = c('ranwalk', 'halfcauchy', 'mixlistlength'), 
+                                                         write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Hamearis_lucina_crick_mixLL, "/home/galina/results_Hamearis_lucina_crick_mixLL.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Hamearis_lucina_crick_mixLL.rds")
+
+
