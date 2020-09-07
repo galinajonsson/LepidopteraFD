@@ -588,3 +588,27 @@ time.taken <- end.time - start.time
 saveRDS(results_Erebia_aethiops_crick_mixLL, "/home/galina/results_Erebia_aethiops_crick_mixLL.rds")
 saveRDS(time.taken, "/home/galina/time.taken_results_Erebia_aethiops_crick_mixLL.rds")
 
+
+
+
+
+start.time <- Sys.time()
+results_Pyrgus_malvae_crick_mixLL <- spartaG::occDetFunc(taxa_name = "Pyrgus.malvae",
+                                                           n_iterations = 100,
+                                                           burnin = 50,
+                                                           thinning = 3, 
+                                                           occDetdata = occDetdata_merged_7April2020, 
+                                                           spp_vis = spp_vis_merged_7April2020, 
+                                                           modeltype = c('ranwalk', 'halfcauchy', 'mixlistlength'), 
+                                                           write_results = FALSE)
+end.time <- Sys.time()
+time.taken <- end.time - start.time
+# Save outputs
+saveRDS(results_Pyrgus_malvae_crick_mixLL, "/home/galina/results_Pyrgus_malvae_crick_mixLL.rds")
+saveRDS(time.taken, "/home/galina/time.taken_results_Pyrgus_malvae_crick_mixLL.rds")
+
+
+
+
+
+

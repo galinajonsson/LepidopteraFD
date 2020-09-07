@@ -163,31 +163,6 @@ source("../analyses/function-summarise_FDmatrics.R")
 
 # Run the functrion
 nullFDmatrics <- summarise_FDmatrics(nullFD_list, 1000, 110)
-
-
-# Plot both functional evenness for both estimates from posterior samples and null samples
-require(ggplot2)
-ggplot(FDmatrics$FEveSum, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Functional evenness +- 1 SD") +
-  xlab("Year") + ylab("Functional evenness")
-
-ggplot(nullFDmatrics$FEveSum, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Null functional evenness +- 1 SD") +
-  xlab("Year") + ylab("Functional evenness")
-
-
-# Plot both functional divergence for both estimates from posterior samples and null samples
-ggplot(FDmatrics$FDivSum, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Functional divergence +- 1 SD") +
-  xlab("Year") + ylab("Functional divergence")
-
-ggplot(nullFDmatrics$FDivSum, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Null functional divergence +- 1 SD") +
-  xlab("Year") + ylab("Functional divergence")
 ```
 
 
@@ -201,33 +176,40 @@ FEveIV <- FDmatrics$FEveSum[,1:101]
 
 # Loop through all FEveSum iterations in FDmatrics and find the standardised effect size
 for(j in 1:110){
-  for(i in 1:100){
-    FEveIV[j,i] <- (2*((FDmatrics$FEveSum[j,i])/((nullFDmatrics$FEveSum[j,102])+(FDmatrics$FEveSum[j,i]))))-1
+  for(i in 1:1000){
+    FEveIV[j,i] <- (2*((FDmatrics$FEveSum[j,i])/((nullFDmatrics$FEveSum[j,1002])+(FDmatrics$FEveSum[j,i]))))-1
     }
 }
 
 require(plotrix)
-FEveIV$mean <- apply(FEveIV[,1:100], 1, mean)
-FEveIV$sd <- apply(FEveIV[,1:100], 1, sd)
-FEveIV$sem <- apply(FEveIV[,1:100], 1, std.error)
+FEveIV$mean <- apply(FEveIV[,1:1000], 1, mean)
+FEveIV$sd <- apply(FEveIV[,1:1000], 1, sd)
+FEveIV$sem <- apply(FEveIV[,1:1000], 1, std.error)
+FEveIV$year <- 1:110
 
 
 # Plot both functional evenness for both estimates from posterior samples and null samples
 require(ggplot2)
 ggplot(FDmatrics$FEveSum, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Functional evenness +- 1 SD") +
-  xlab("Year") + ylab("Functional evenness")
+  geom_ribbon(aes(ymin = ((nullFDmatrics$FEveSum$mean)-(nullFDmatrics$FEveSum$sd)), 
+                    ymax = ((nullFDmatrics$FEveSum$mean)+(nullFDmatrics$FEveSum$sd))), 
+                colour = "grey", fill = "grey", alpha = 0.4) +
+  xlab("Year") + ylab(" \n Functional evenness") + 
+  theme_bw() + theme(text = element_text(size=20))
 
-ggplot(nullFDmatrics$FEveSum, aes(x=(year+1899), y=mean)) + 
+
+require(ggplot2)
+ggplot(FDmatrics$FDivSum, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Null functional evenness +- 1 SD") +
-  xlab("Year") + ylab("Functional evenness")
+  xlab("Year") + ylab(" \n Functional divergence") + 
+  theme_bw() + theme(text = element_text(size=20))
+
 
 ggplot(FEveIV, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Index of variance for functional evenness +- 1 SD") +
-  xlab("Year") + ylab("Index of Variance (Functional evenness)")
+  xlab("Year") + ylab("Index of Variance \n (Functional evenness)") +
+    theme_bw() + theme(text = element_text(size=20))
 ```
 
 
@@ -239,15 +221,16 @@ FDivIV <- FDmatrics$FDivSum[,1:101]
 
 # Loop through all FEveSum iterations in FDmatrics and find the Index of variance
 for(j in 1:110){
-  for(i in 1:100){
-    FDivIV[j,i] <- (2*((FDmatrics$FDivSum[j,i])/((nullFDmatrics$FDivSum[j,102])+(FDmatrics$FDivSum[j,i]))))-1
+  for(i in 1:1000){
+    FDivIV[j,i] <- (2*((FDmatrics$FDivSum[j,i])/((nullFDmatrics$FDivSum[j,1002])+(FDmatrics$FDivSum[j,i]))))-1
     }
 }
 
 require(plotrix)
-FDivIV$mean <- apply(FDivIV[,1:100], 1, mean)
-FDivIV$sd <- apply(FDivIV[,1:100], 1, sd)
-FDivIV$sem <- apply(FDivIV[,1:100], 1, std.error)
+FDivIV$mean <- apply(FDivIV[,1:1000], 1, mean)
+FDivIV$sd <- apply(FDivIV[,1:1000], 1, sd)
+FDivIV$sem <- apply(FDivIV[,1:1000], 1, std.error)
+FDivIV$year <- 1:110
 
 
 
@@ -255,18 +238,17 @@ FDivIV$sem <- apply(FDivIV[,1:100], 1, std.error)
 require(ggplot2)
 ggplot(FDmatrics$FDivSum, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Functional divergence +- 1 SD") +
-  xlab("Year") + ylab("Functional divergence")
+  geom_ribbon(aes(ymin = ((nullFDmatrics$FDivSum$mean)-(nullFDmatrics$FDivSum$sd)), 
+                    ymax = ((nullFDmatrics$FDivSum$mean)+(nullFDmatrics$FDivSum$sd))), 
+                colour = "grey", fill = "grey", alpha = 0.4) +
+  xlab("Year") + ylab(" \n Functional divergence") + 
+  theme_bw() + theme(text = element_text(size=20))
 
-ggplot(nullFDmatrics$FDivSum, aes(x=(year+1899), y=mean)) + 
-geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Null functional divergence +- 1 SD") +
-  xlab("Year") + ylab("Functional divergence")
 
 ggplot(FDivIV, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Index of variance for functional divergence +- 1 SD") +
-  xlab("Year") + ylab("Index of variance (functional divergence)")
+  xlab("Year") + ylab("Index of variance \n (functional divergence)") + 
+    theme_bw() + theme(text = element_text(size=20))
 
 ```
 
@@ -287,8 +269,9 @@ Wingspan.average <- summarise_CWM(FD_list, 1, 1000,110)
 # plot average wingspan
 ggplot(Wingspan.average, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Wingspan") +
-  xlab("Year") + ylab("Wingspan (mm)")
+  #ggtitle("Wingspan") +
+  xlab("Year") + ylab("Wingspan (mm)") +
+      theme_bw() + theme(text = element_text(size=20))
 
 
 ### Mobility Score
@@ -296,8 +279,9 @@ Mobility.score <- summarise_CWM(FD_list, 2, 1000,110)
 # plot average wingspan
 ggplot(Mobility.score, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Mobility Score") +
-  xlab("Year") + ylab("Mobility Score")
+  #ggtitle("Mobility Score") +
+  xlab("Year") + ylab("Mobility Score") +
+      theme_bw() + theme(text = element_text(size=20))
 
 
 
@@ -319,8 +303,9 @@ PhagyAll$sem <- apply(PhagyAll[,1:1000], 1, std.error)
 # plot
 ggplot(PhagyAll, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Phagy score") +
-  xlab("Year") + ylab("Phagy score")
+  #ggtitle("Phagy score") +
+  xlab("Year") + ylab("Phagy score") +
+      theme_bw() + theme(text = element_text(size=20))
 
 ### Number of host plants
 HPphenRange <- summarise_CWM(FD_list, 4, 1000,110)
@@ -331,21 +316,22 @@ geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) +
   xlab("Year") + ylab("Number of host plants")
 
 ### Symbiosis
-Symbiosis <- summarise_CWM(FD_list, 5, 100,110)
+Symbiosis <- summarise_CWM(FD_list, 5, 1000,110)
 # Loop through and make all columns numeric
-for(i in 1:100){
+for(i in 1:1000){
   Symbiosis[,i] <- as.numeric(as.character(Symbiosis[,i]))
 }
 # summarise mean, sd and sem
 require(plotrix)
-Symbiosis$mean <- apply(Symbiosis[,1:100], 1, mean)
-Symbiosis$sd <- apply(Symbiosis[,1:100], 1, sd)
-Symbiosis$sem <- apply(Symbiosis[,1:100], 1, std.error)
+Symbiosis$mean <- apply(Symbiosis[,1:1000], 1, mean)
+Symbiosis$sd <- apply(Symbiosis[,1:1000], 1, sd)
+Symbiosis$sem <- apply(Symbiosis[,1:1000], 1, std.error)
 # plot
 ggplot(Symbiosis, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Symbiosis score") +
-  xlab("Year") + ylab("Symbiosis score")
+  #ggtitle("Symbiosis score") +
+  xlab("Year") + ylab("Symbiosis score") +
+      theme_bw() + theme(text = element_text(size=20))
 
 
 
@@ -357,18 +343,20 @@ geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) +
 ### Proboscis length
 ProboscisL <- summarise_CWM(FD_list, 6, 1000,110)
 # plot
-ggplot(HPphenRange, aes(x=(year+1899), y=mean)) + 
+ggplot(ProboscisL, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Proboscis length") +
-  xlab("Year") + ylab("Proboscis length (mm)")
+  #ggtitle("Proboscis length") +
+  xlab("Year") + ylab("Proboscis length (mm)") +
+      theme_bw() + theme(text = element_text(size=20))
 
 
 ### Feeding specialisation
 Fsp <- summarise_CWM(FD_list, 7, 1000,110)
 ggplot(Fsp, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Feeding specialisation") +
-  xlab("Year") + ylab("Feeding specialisation")
+  #ggtitle("Feeding specialisation") +
+  xlab("Year") + ylab("Feeding specialisation") +
+      theme_bw() + theme(text = element_text(size=20))
 
 
 
@@ -381,8 +369,10 @@ EggSize <- summarise_CWM(FD_list, 8, 100,110)
 # plot egg size
 ggplot(EggSize, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Egg Size") +
-  xlab("Year") + ylab("Egg Size (mm2)")
+  #ggtitle("Egg Size") +
+  xlab("Year") + ylab("Egg Size (mm2)") +
+      theme_bw() + theme(text = element_text(size=20))
+
 
 
 ### Egg load
@@ -390,8 +380,9 @@ EggLoad <- summarise_CWM(FD_list, 9, 100,110)
 # plot egg size
 ggplot(EggLoad, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Egg Load") +
-  xlab("Year") + ylab("Egg Load")
+ # ggtitle("Egg Load") +
+  xlab("Year") + ylab("Egg Load") +
+      theme_bw() + theme(text = element_text(size=20))
 
 
 
@@ -413,8 +404,9 @@ AH$sem <- apply(AH[,1:1000], 1, std.error)
 # plot
 ggplot(AH, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Adult hardiness") +
-  xlab("Year") + ylab("Adult hardiness")
+  #ggtitle("Adult hardiness") +
+  xlab("Year") + ylab("Adult hardiness")+
+      theme_bw() + theme(text = element_text(size=20))
 
 ### Overwintering stage
 HibStage <- summarise_CWM(FD_list, 11, 1000,110)
@@ -430,8 +422,9 @@ HibStage$sem <- apply(HibStage[,1:1000], 1, std.error)
 # plot
 ggplot(HibStage, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Overwintering stage") +
-  xlab("Year") + ylab("Overwintering stage")
+  #ggtitle("Overwintering stage") +
+  xlab("Year") + ylab("Overwintering stage") +
+      theme_bw() + theme(text = element_text(size=20))
 
 
 ### Voltinism score
@@ -446,10 +439,11 @@ VoltScore$mean <- apply(VoltScore[,1:1000], 1, mean)
 VoltScore$sd <- apply(VoltScore[,1:1000], 1, sd)
 VoltScore$sem <- apply(VoltScore[,1:1000], 1, std.error)
 # plot
-ggplot(PopStr1t, aes(x=(year+1899), y=mean)) + 
+ggplot(VoltScore, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Voltinism score") +
-  xlab("Year") + ylab("Voltinism score")
+  #ggtitle("Voltinism score") +
+  xlab("Year") + ylab("Voltinism score")+
+      theme_bw() + theme(text = element_text(size=20))
 
 ###########################################################
 ##################  Population structure  #################
@@ -470,8 +464,9 @@ POPSTR2$sem <- apply(POPSTR2[,1:100], 1, std.error)
 # plot
 ggplot(POPSTR2, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Population structure score") +
-  xlab("Year") + ylab("Population structure score")
+  #ggtitle("Population structure score") +
+  xlab("Year") + ylab("Population structure score") +
+      theme_bw() + theme(text = element_text(size=20))
 
 ### Breeding population Structure 
 PopStr1t <- summarise_CWM(FD_list, 14, 1000,110)
@@ -487,8 +482,9 @@ PopStr1t$sem <- apply(PopStr1t[,1:100], 1, std.error)
 # plot
 ggplot(PopStr1t, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Breeding population structure score") +
-  xlab("Year") + ylab("Breeding population structure score")
+  #ggtitle("Breeding population structure score") +
+  xlab("Year") + ylab("Breeding pop. structure score") +
+      theme_bw() + theme(text = element_text(size=20))
 
 ### Metapopulation Structure
 METApop <- summarise_CWM(FD_list, 15, 1000,110)
@@ -504,8 +500,9 @@ METApop$sem <- apply(METApop[,1:1000], 1, std.error)
 # plot
 ggplot(METApop, aes(x=(year+1899), y=mean)) + 
 geom_pointrange(aes(ymin=mean-sd, ymax=mean+sd)) + 
-  ggtitle("Metapopulation structure score") +
-  xlab("Year") + ylab("Metapopulation structure score")
+  #ggtitle("Metapopulation structure score") +
+  xlab("Year") + ylab("Metapopulation structure score") +
+      theme_bw() + theme(text = element_text(size=20))
 
 
 

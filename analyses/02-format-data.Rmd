@@ -58,6 +58,13 @@ NHM <- NHM[,c(19, 17, 7, 21)]
 
 # Add source column 
 NHM$source <- c("NHM")
+# 81073
+formattedOccDatatest <- sparta::formatOccData(taxa = as.factor(NHM$species), 
+                                              site = as.factor(NHM$km10grid), 
+                                              survey =
+as.character(paste(as.character(NHM$km10grid),
+                   as.character(NHM$date))),
+                                              closure_period = as.integer(NHM$year))
 
 
 
@@ -262,8 +269,8 @@ BNM_temp <- formattedOccData_BNM$occDetdata
 BMS_temp <- formattedOccData_BMS$occDetdata
 
 # Insert a new column that combines both visit and list lbngth
-BNM_temp$visitLL <- paste(BNM_temp$L, BNM_temp$visit, sep = "") # 1243721
-BMS_temp$visitLL <- paste(BMS_temp$L, BMS_temp$visit, sep = "") # 240060
+#BNM_temp$visitLL <- paste(BNM_temp$L, BNM_temp$visit, sep = "") # 1243721
+#BMS_temp$visitLL <- paste(BMS_temp$L, BMS_temp$visit, sep = "") # 240060
 
 # Find visitLL values present in BMS that are also present in BNM
 commonVisits <- merge(BMS_temp, BNM_temp, by.x = "visit", by.y = "visit") # 8523
@@ -276,16 +283,19 @@ commonVisits <- merge(BMS_temp, BNM_temp, by.x = "visit", by.y = "visit") # 8523
 ########################## 22 March ###################################
 
 test <- data.frame(List = as.numeric(formattedOccData_BNM$occDetdata$L),
-                   source = as.factor("BNM"))
+                   source = as.factor("Other BNM Visits"))
 
 test2 <- data.frame(List = as.numeric(formattedOccData_BMS$occDetdata$L),
-                   source = as.factor("UKBMS"))
+                   source = as.factor("UKBMS visits"))
 
-test3 <- rbind(test, test2)
+test3 <- rbind(test2,test)
 require(ggplot2)
 ggplot(test3, aes(List, stat(density), colour = source)) +
-  geom_freqpoly(aes(linetype=source, color=source)) + xlab("ListLength") + ylab("Density") #+ theme(legend.position = "none") +
-  scale_color_manual(values=c('black', "salmon"))
+  geom_freqpoly(aes(linetype=source, color=source)) + xlab("ListLength") + ylab("Density") +
+xlab("List Length")
+#+ theme(legend.position = "none") +
+#  scale_color_manual(values=c('black', "salmon")) +
+#    xlab("List Length")
 
 #### Move anything with a LL higher than 3 in BNM to BMS
 #BNMoverThreeOccDet <- subset(formattedOccData_BNM$occDetdata, L >3) # 536505
@@ -303,22 +313,22 @@ ggplot(test3, aes(List, stat(density), colour = source)) +
 
 ###### Change list lengths (LLs) to reflect the correct data types
 # Change the list length of the formatted BMS records to a value of 1 (DT 1)
-formattedOccData_BMS$occDetdata$L <- 1
+#formattedOccData_BMS$occDetdata$L <- 1
 
 # Change the list length of the formatted BNM records to a value of 2 (DT 2)
-formattedOccData_BNM$occDetdata$L <- 2
+#formattedOccData_BNM$occDetdata$L <- 2
 
 # Change the list length of the formatted collection data by assigning all values a value of 10 (DT 3)
-formattedOccData_colls$occDetdata$L <- 10
+#formattedOccData_colls$occDetdata$L <- 10
 
 
 # Merge the formated BMS, BNM and collection. Each contains two list and I will merge the two lists of the two datasets separately. 
-occDetdata_merged_24March2020 <- rbind(formattedOccData_BMS$occDetdata,
-                                   formattedOccData_BNM$occDetdata,
-                                   formattedOccData_colls$occDetdata)
-spp_vis_merged_24March2020 <- rbind(formattedOccData_BMS$spp_vis,
-                                formattedOccData_BNM$spp_vis, 
-                                formattedOccData_colls$spp_vis)
+#occDetdata_merged_24March2020 <- rbind(formattedOccData_BMS$occDetdata,
+#                                   formattedOccData_BNM$occDetdata,
+#                                   formattedOccData_colls$occDetdata)
+#spp_vis_merged_24March2020 <- rbind(formattedOccData_BMS$spp_vis,
+#                                formattedOccData_BNM$spp_vis, 
+#                                formattedOccData_colls$spp_vis)
 
 # Export
 #write.csv(occDetdata_merged_24March2020, '../data/formattedData/occDetdata_merged_2020-03-24.csv', row.names=FALSE)
@@ -445,17 +455,20 @@ levels(recordsUsed3$L)[levels(recordsUsed3$L)=="27"] <- "BNM"
 levels(recordsUsed3$L)[levels(recordsUsed3$L)=="28"] <- "BNM"
 levels(recordsUsed3$L)[levels(recordsUsed3$L)=="30"] <- "BNM"
 levels(recordsUsed3$L)[levels(recordsUsed3$L)=="22222"] <- "BMS"
+levels(recordsUsed3$L)[levels(recordsUsed3$L)=="BMS"] <- "UKBMS"
 levels(recordsUsed3$L)[levels(recordsUsed3$L)=="33333"] <- "NHCs"
 
 recordsUsed3$Source <- recordsUsed3$L
 
-
 # Plot records years
 library(ggplot2)
 p <- ggplot(recordsUsed3,aes(x=year, group=Source, fill=Source))+
-  geom_histogram(position="identity",alpha=0.5,binwidth = 1, boundary = 1900)+theme_bw(base_size = 15) + scale_y_sqrt()
+  geom_histogram(position="identity",alpha=0.5,binwidth = 1, boundary = 1900)+ theme_bw() + scale_y_sqrt()
 p <- p + labs(x = "Year", y = "Number of records", colour = "Record source")
-p <- p + guides(fill=guide_legend(title="Record source"))
+p <- p + guides(fill=guide_legend(title="Record source")) +
+  scale_color_manual(values=c("black", "#56B4E9", "#E69F00"))+
+  scale_fill_manual(values=c("black", "#56B4E9", "#E69F00")) +
+    theme(text = element_text(size=20)) + scale_x_continuous(breaks=seq(1900,2015,25))
 p
 
 
@@ -506,6 +519,18 @@ levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="BMS+BNM+NHCs"]
 levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="BMS+NHCs+BNM"] <- "BNM+BMS+NHCs"
 levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="BNM+NHCs"] <- "NHCs+BNM"
 recordsUsed_spat$Source <- droplevels(recordsUsed_spat$Source)
+
+
+
+levels(recordsUsed_spat$Source)
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="BNM+NHCs+UKBMS"] <- "BNM+UKBMS+NHCs"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="NHCs+BNM"] <- "BNM+NHCs"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="NHCs+BNM+UKBMS"] <- "BNM+UKBMS+NHCs"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="NHCs+UKBMS+BNM"] <- "BNM+UKBMS+NHCs"
+levels(recordsUsed_spat$Source)[levels(recordsUsed_spat$Source)=="UKBMS+BNM"] <- "BNM+UKBMS"
+
+
+recordsUsed_spat$Source <- ordered(recordsUsed_spat$Source, levels = c("BNM", "BNM+UKBMS", "BNM+NHCs", "BNM+UKBMS+NHCs"))
 
 
 # Plot maps
